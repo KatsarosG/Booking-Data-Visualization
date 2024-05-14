@@ -12,9 +12,10 @@ class MyWidget(QtWidgets.QWidget):
         CalcMonthButton = QtWidgets.QPushButton("Month Stats")
         CalcSeasonButton = QtWidgets.QPushButton("Season Stats")
         CalcRoomTypeButton = QtWidgets.QPushButton("Room Type Stats")
+        CalcVisitorTypeButton = QtWidgets.QPushButton("Visitor Type Stats")
 
         ConsoleText = QtWidgets.QLabel("...Console...", )
-        ConsoleText.setStyleSheet("QLabel {background-color: silver; border: 1px solid gray; border-radius: 2px;}")
+        ConsoleText.setStyleSheet("QLabel {color: black; background-color: silver; border: 1px solid gray; border-radius: 2px;}")
 
         
         outerLayout = QtWidgets.QHBoxLayout(self) 
@@ -36,6 +37,7 @@ class MyWidget(QtWidgets.QWidget):
         menuLayout.addWidget(CalcMonthButton)
         menuLayout.addWidget(CalcSeasonButton)
         menuLayout.addWidget(CalcRoomTypeButton)
+        menuLayout.addWidget(CalcVisitorTypeButton)
 
         menuLayout.insertSpacing(-1,500)
         outerLayout.addLayout(menuLayout)
@@ -60,6 +62,7 @@ class MyWidget(QtWidgets.QWidget):
                 ConsoleText.setText("Basic Stats Calculations Successful! Showing Graph.")
                 pixmap = QtGui.QPixmap(".basicStats.png")
                 pic.setPixmap(pixmap)
+                pic.setScaledContents(True)
                 pic.show()
 
         def calcMonthsButton_func():
@@ -71,6 +74,7 @@ class MyWidget(QtWidgets.QWidget):
                 ConsoleText.setText("Month Stats Calculation Successful! Showing Graph.")
                 pixmap= QtGui.QPixmap(".monthStats.png")
                 pic.setPixmap(pixmap)
+                pic.setScaledContents(True)
                 pic.show()
 
         def calcSeasonButton_func():
@@ -80,23 +84,38 @@ class MyWidget(QtWidgets.QWidget):
                 ConsoleText.setText("No File Selected! Please Read A File First.")
             else:
                 ConsoleText.setText("Season Stats Calculation Succeessful! Showing Graph.")
-                pixmap = QtGui. QPixmap(".seasonStats.png")
+                pixmap = QtGui.QPixmap(".seasonStats.png")
                 pic.setPixmap(pixmap)
+                pic.setScaledContents(True)
                 pic.show()
 
         def calcRoomTypeButton_func():
-            #try:
-            fun.calcRoomTypeStats()
-            #except NameError:
-            #    ConsoleText.setText("No File Selected! Please Read A File First.")
-            #else:
-            ConsoleText.setText("Room Type Calculation Successful! Showing Graph.")
-            pixmap = QtGui.QPixmap(".roomTypeStats.png")
-            pic.setPixmap(pixmap)
-            pic.show()
+            try:
+                fun.calcRoomTypeStats()
+            except NameError:
+                ConsoleText.setText("No File Selected! Please Read A File First.")
+            else:
+                ConsoleText.setText("Room Type Calculation Successful! Showing Graph.")
+                pixmap = QtGui.QPixmap(".roomTypeStats.png")
+                pic.setPixmap(pixmap)
+                pic.setScaledContents(True)
+                pic.show()
+
+        def calcVisitorTypeButton_func():
+            try:
+                fun.calcVisitorTypeStats()
+            except NameError:
+                ConsoleText.setText("No File Selected! Please Read A File First.")
+            else:
+                ConsoleText.setText("Visitor Type Stats Calculation Successful! Showing Graph.")
+                pixmap = QtGui.QPixmap(".visitorTypeStats.png")
+                pic.setPixmap(pixmap)
+                pic.setScaledContents(True)
+                pic.show()
 
         ReadFileButton.clicked.connect(readFileButton_func)
         CalcBasicButton.clicked.connect(calcBasicsButton_func)
         CalcMonthButton.clicked.connect(calcMonthsButton_func)
         CalcSeasonButton.clicked.connect(calcSeasonButton_func)
         CalcRoomTypeButton.clicked.connect(calcRoomTypeButton_func)
+        CalcVisitorTypeButton.clicked.connect(calcVisitorTypeButton_func)

@@ -148,3 +148,28 @@ def calcRoomTypeStats():
     plt.title("Room Type Reservations:")
     plt.savefig(".roomTypeStats.png")
     plt.close()
+
+def calcVisitorTypeStats():
+    visitorTypeDict = {
+        "Family" : 0,
+        "Couple" : 0,
+        "Alone" : 0
+    }
+
+    for lines in csvFile:
+        if lines['adults'] == 1 and lines['children'] == 0:
+            visitorTypeDict['Alone'] += 1
+        elif lines['adults'] == 2 and lines['children'] == 0:
+            visitorTypeDict['Couple'] += 1
+        elif lines['adults'] >= 1 and lines['children'] >= 0:
+            visitorTypeDict['Family'] += 1
+    plt.tight_layout()
+    plt.pie(list(visitorTypeDict.values()),labels=list(visitorTypeDict.keys()))
+    plt.title("Type of Visitors Stats:")
+    plt.savefig(".visitorTypeStats.png")
+    plt.close()
+
+
+
+
+

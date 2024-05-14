@@ -60,100 +60,33 @@ def calcBasics():
         plt.clf()
 
 def calcMonthStats():
+    global totalMonthDict
     totalMonthDict = {
-        "Jan" : 0,
-        "Feb" : 0,
-        "Mar" : 0,
-        "Apr" : 0,
+        "January" : 0,
+        "February" : 0,
+        "March" : 0,
+        "April" : 0,
         "May" : 0,
-        "Jun" : 0,
-        "Jul" : 0,
-        "Aug" : 0,
-        "Sep" : 0,
-        "Oct" : 0,
-        "Nov" : 0,
-        "Dec" : 0
+        "June" : 0,
+        "July" : 0,
+        "August" : 0,
+        "September" : 0,
+        "October" : 0,
+        "November" : 0,
+        "December" : 0
 
     }
 
     resortMonthDict = totalMonthDict.copy()
     cityMonthDict = totalMonthDict.copy()
-    
     for lines in csvFile:
         if lines['hotel'] == "Resort Hotel":
-            if lines['arrival_date_month'] == "January":
-                resortMonthDict['Jan'] += 1
-                totalMonthDict['Jan'] += 1
-            elif lines['arrival_date_month'] == "February":
-                resortMonthDict['Feb'] += 1
-                totalMonthDict['Feb'] += 1
-            elif lines['arrival_date_month'] == "March":
-                resortMonthDict['Mar'] += 1
-                totalMonthDict['Mar'] += 1
-            elif lines['arrival_date_month'] == "April":
-                resortMonthDict['Apr'] += 1
-                totalMonthDict['Apr'] += 1
-            elif lines['arrival_date_month'] == "May":
-                resortMonthDict['May'] += 1
-                totalMonthDict['May'] += 1
-            elif lines['arrival_date_month'] == "June":
-                resortMonthDict['Jun'] += 1
-                totalMonthDict['Jun'] += 1
-            elif lines['arrival_date_month'] == "July":
-                resortMonthDict['Jul'] += 1
-                totalMonthDict['Jul'] += 1
-            elif lines['arrival_date_month'] == "August":
-                resortMonthDict['Aug'] += 1
-                totalMonthDict['Aug'] += 1
-            elif lines['arrival_date_month'] == "September":
-                resortMonthDict['Sep'] += 1
-                totalMonthDict['Sep'] += 1
-            elif lines['arrival_date_month'] == "October":
-                resortMonthDict['Oct'] += 1
-                totalMonthDict['Oct'] += 1
-            elif lines['arrival_date_month'] == "November":
-                resortMonthDict['Nov'] += 1
-                totalMonthDict['Nov'] += 1
-            elif lines['arrival_date_month'] == "December":
-                resortMonthDict['Dec'] += 1
-                totalMonthDict['Dec'] += 1
-        elif lines['hotel'] == "City Hotel":
-            if lines['arrival_date_month'] == "January":
-                cityMonthDict['Jan'] += 1
-                totalMonthDict['Jan'] += 1
-            elif lines['arrival_date_month'] == "February":
-                cityMonthDict['Feb'] += 1
-                totalMonthDict['Feb'] += 1
-            elif lines['arrival_date_month'] == "March":
-                cityMonthDict['Mar'] += 1
-                totalMonthDict['Mar'] += 1
-            elif lines['arrival_date_month'] == "April":
-                cityMonthDict['Apr'] += 1
-                totalMonthDict['Apr'] += 1
-            elif lines['arrival_date_month'] == "May":
-                cityMonthDict['May'] += 1
-                totalMonthDict['May'] += 1
-            elif lines['arrival_date_month'] == "June":
-                cityMonthDict['Jun'] += 1
-                totalMonthDict['Jun'] += 1
-            elif lines['arrival_date_month'] == "July":
-                cityMonthDict['Jul'] += 1
-                totalMonthDict['Jul'] += 1
-            elif lines['arrival_date_month'] == "August":
-                cityMonthDict['Aug'] += 1
-                totalMonthDict['Aug'] += 1
-            elif lines['arrival_date_month'] == "September":
-                cityMonthDict['Sep'] += 1
-                totalMonthDict['Sep'] += 1
-            elif lines['arrival_date_month'] == "October":
-                cityMonthDict['Oct'] += 1
-                totalMonthDict['Oct'] += 1
-            elif lines['arrival_date_month'] == "November":
-                cityMonthDict['Nov'] += 1
-                totalMonthDict['Nov'] += 1
-            elif lines['arrival_date_month'] == "December":
-                cityMonthDict['Dec'] += 1
-                totalMonthDict['Dec'] += 1
+            resortMonthDict[lines['arrival_date_month']] += 1
+            totalMonthDict[lines['arrival_date_month']] += 1
+        else:
+            cityMonthDict[lines['arrival_date_month']] += 1
+            totalMonthDict[lines['arrival_date_month']] += 1
+
     plt.plot(list(totalMonthDict.keys()), list(totalMonthDict.values()), marker='.', label = 'Total', color='Blue')
     plt.plot(list(resortMonthDict.keys()), list(resortMonthDict.values()), marker='.', label = 'Resort Hotels', color='Orange')
     plt.plot(list(cityMonthDict.keys()), list(cityMonthDict.values()), marker='.', label = 'City Hotels', color='Red')
@@ -163,6 +96,8 @@ def calcMonthStats():
     plt.grid()
     plt.legend()
     plt.title("Reservations Per Month:")
+    plt.xticks(rotation=30)
+    plt.tight_layout()
     plt.savefig(".monthStats.png")
     plt.cla()
 
@@ -173,18 +108,26 @@ def calcSeasonStats():
         "Summer" : 0,
         "Autumn" : 0
     }
-    for lines in csvFile:
-        if lines['arrival_date_month'] == "December" or lines['arrival_date_month'] == "January" or lines['arrival_date_month'] == "February":
-            totalSeasonDict['Winter'] += 1
-        elif lines['arrival_date_month'] == "March" or lines['arrival_date_month'] == "April" or lines['arrival_date_month'] == "May":
-            totalSeasonDict['Spring'] += 1
-        elif lines['arrival_date_month'] == "July" or lines['arrival_date_month'] == "June" or lines['arrival_date_month'] == "August":
-            totalSeasonDict['Summer'] += 1
-        elif lines['arrival_date_month'] == "September" or lines['arrival_date_month'] == "October" or lines['arrival_date_month'] == "November":
-            totalSeasonDict['Autumn'] += 1
+
+    calcMonthStats()
+
+    totalSeasonDict['Winter'] = totalMonthDict['December'] + totalMonthDict['January'] + totalMonthDict['February'] 
+    totalSeasonDict['Spring'] = totalMonthDict['March'] + totalMonthDict['April'] + totalMonthDict['May'] 
+    totalSeasonDict['Summer'] = totalMonthDict['June'] + totalMonthDict['July'] + totalMonthDict['August'] 
+    totalSeasonDict['Autumn'] = totalMonthDict['September'] + totalMonthDict['October'] + totalMonthDict['November'] 
+
     plt.plot(list(totalSeasonDict.keys()), list(totalSeasonDict.values()), marker='.', color='Blue')
     plt.fill_between(list(totalSeasonDict.keys()), list(totalSeasonDict.values()), color='blue', alpha=.1)
     plt.grid()
     plt.title("Reservations Per Season:")
     plt.savefig(".seasonStats.png")
     plt.cla()
+
+def calcRoomTypeStats():
+    roomTypeDict = {
+        "A" : 0,
+        "B" : 0,
+        "C" : 0,
+        "D" : 0,
+        "E" : 0
+    }

@@ -57,7 +57,7 @@ def calcBasics():
         axes[1].title.set_text("Hotel Night Stay-Ins Average:")
         fig.tight_layout()
         fig.savefig(".basicStats.png")
-        plt.clf()
+        plt.close()
 
 def calcMonthStats():
     global totalMonthDict
@@ -99,7 +99,7 @@ def calcMonthStats():
     plt.xticks(rotation=30)
     plt.tight_layout()
     plt.savefig(".monthStats.png")
-    plt.cla()
+    plt.close()
 
 def calcSeasonStats():
     totalSeasonDict = {
@@ -121,7 +121,7 @@ def calcSeasonStats():
     plt.grid()
     plt.title("Reservations Per Season:")
     plt.savefig(".seasonStats.png")
-    plt.cla()
+    plt.close()
 
 def calcRoomTypeStats():
     roomTypeDict = {
@@ -129,5 +129,22 @@ def calcRoomTypeStats():
         "B" : 0,
         "C" : 0,
         "D" : 0,
-        "E" : 0
+        "E" : 0,
+        "F" : 0,
+        "G" : 0,
+        "H" : 0,
+        "L" : 0,
+        "P" : 0
     }
+    counter = 0
+    for lines in csvFile:
+        roomTypeDict[lines['reserved_room_type']] += 1
+        counter += 1
+    plt.tight_layout()
+    plt.pie(list(roomTypeDict.values()), shadow=True, startangle=90)
+    
+    labels = [f'{l}: {round(s/counter*100, 2)}%' for l, s in zip(list(roomTypeDict.keys()),roomTypeDict.values())]
+    plt.legend(shadow=True, labels=labels, bbox_to_anchor=(0.05,0.8), loc='center right')
+    plt.title("Room Type Reservations:")
+    plt.savefig(".roomTypeStats.png")
+    plt.close()

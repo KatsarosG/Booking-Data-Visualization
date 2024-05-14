@@ -84,7 +84,19 @@ class MyWidget(QtWidgets.QWidget):
                 pic.setPixmap(pixmap)
                 pic.show()
 
+        def calcRoomTypeButton_func():
+            #try:
+            fun.calcRoomTypeStats()
+            #except NameError:
+            #    ConsoleText.setText("No File Selected! Please Read A File First.")
+            #else:
+            ConsoleText.setText("Room Type Calculation Successful! Showing Graph.")
+            pixmap = QtGui.QPixmap(".roomTypeStats.png")
+            pic.setPixmap(pixmap)
+            pic.show()
+
         ReadFileButton.clicked.connect(readFileButton_func)
         CalcBasicButton.clicked.connect(calcBasicsButton_func)
         CalcMonthButton.clicked.connect(calcMonthsButton_func)
         CalcSeasonButton.clicked.connect(calcSeasonButton_func)
+        CalcRoomTypeButton.clicked.connect(calcRoomTypeButton_func)

@@ -6,11 +6,14 @@ class MyWidget(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Python Project 2024")
-        ReadFileButton = QtWidgets.QPushButton("ReadFile")
+        ReadFileButton = QtWidgets.QPushButton("Read File")
         ReadFileButton.setFixedSize(100,20)
         
         CalcBasicButton = QtWidgets.QPushButton("Basic Stats")
         CalcBasicButton.setFixedSize(100,20)
+
+        CalcMonthButton = QtWidgets.QPushButton("Month Stats")
+        CalcMonthButton.setFixedSize(100,20)
 
         ConsoleText = QtWidgets.QLabel("...Console...")
 
@@ -30,6 +33,7 @@ class MyWidget(QtWidgets.QWidget):
         outputLayout.addWidget(ConsoleText)
         menuLayout.addWidget(ReadFileButton)
         menuLayout.addWidget(CalcBasicButton)
+        menuLayout.addWidget(CalcMonthButton)
         outerLayout.addLayout(outputLayout)
         outerLayout.addLayout(menuLayout)
         
@@ -46,7 +50,7 @@ class MyWidget(QtWidgets.QWidget):
         def calcBasicsButton_func():
             try:
                 fun.calcBasics()
-            except:
+            except NameError:
                 ConsoleText.setText("No File Selected! Please Read A File First.")
             else:
                 ConsoleText.setText("Basic Stats Calculations Successful! Showing Graph.")
@@ -54,5 +58,17 @@ class MyWidget(QtWidgets.QWidget):
                 pic.setPixmap(pixmap)
                 pic.show()
 
+        def calcMonthsButton_func():
+            try:
+                fun.calcMonthStats()
+            except NameError:
+                ConsoleText.setText("No File Selected! Please Read A File First.")
+            else:
+                ConsoleText.setText("Month Stats Calculation Successful! Showing Graph.")
+                pixmap= QtGui.QPixmap(".monthStats.png")
+                pic.setPixmap(pixmap)
+                pic.show()
+
         ReadFileButton.clicked.connect(readFileButton_func)
         CalcBasicButton.clicked.connect(calcBasicsButton_func)
+        CalcMonthButton.clicked.connect(calcMonthsButton_func)

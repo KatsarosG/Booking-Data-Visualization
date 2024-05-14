@@ -6,16 +6,15 @@ class MyWidget(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Python Project 2024")
+
         ReadFileButton = QtWidgets.QPushButton("Read File")
-        ReadFileButton.setFixedSize(100,20)
-        
         CalcBasicButton = QtWidgets.QPushButton("Basic Stats")
-        CalcBasicButton.setFixedSize(100,20)
-
         CalcMonthButton = QtWidgets.QPushButton("Month Stats")
-        CalcMonthButton.setFixedSize(100,20)
+        CalcSeasonButton = QtWidgets.QPushButton("Season Stats")
+        CalcRoomTypeButton = QtWidgets.QPushButton("Room Type Stats")
 
-        ConsoleText = QtWidgets.QLabel("...Console...")
+        ConsoleText = QtWidgets.QLabel("...Console...", )
+        ConsoleText.setStyleSheet("QLabel {background-color: silver; border: 1px solid gray; border-radius: 2px;}")
 
         
         outerLayout = QtWidgets.QHBoxLayout(self) 
@@ -31,11 +30,16 @@ class MyWidget(QtWidgets.QWidget):
         pic.show()
 
         outputLayout.addWidget(ConsoleText)
+
         menuLayout.addWidget(ReadFileButton)
         menuLayout.addWidget(CalcBasicButton)
         menuLayout.addWidget(CalcMonthButton)
-        outerLayout.addLayout(outputLayout)
+        menuLayout.addWidget(CalcSeasonButton)
+        menuLayout.addWidget(CalcRoomTypeButton)
+
+        menuLayout.insertSpacing(-1,500)
         outerLayout.addLayout(menuLayout)
+        outerLayout.addLayout(outputLayout)
         
         def readFileButton_func():
             ConsoleText.setText("Reading File...")
@@ -69,6 +73,18 @@ class MyWidget(QtWidgets.QWidget):
                 pic.setPixmap(pixmap)
                 pic.show()
 
+        def calcSeasonButton_func():
+            try:
+                fun.calcSeasonStats()
+            except NameError:
+                ConsoleText.setText("No File Selected! Please Read A File First.")
+            else:
+                ConsoleText.setText("Season Stats Calculation Succeessful! Showing Graph.")
+                pixmap = QtGui. QPixmap(".seasonStats.png")
+                pic.setPixmap(pixmap)
+                pic.show()
+
         ReadFileButton.clicked.connect(readFileButton_func)
         CalcBasicButton.clicked.connect(calcBasicsButton_func)
         CalcMonthButton.clicked.connect(calcMonthsButton_func)
+        CalcSeasonButton.clicked.connect(calcSeasonButton_func)

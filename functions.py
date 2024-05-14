@@ -162,5 +162,29 @@ def calcMonthStats():
     plt.fill_between(list(resortMonthDict.keys()), list(resortMonthDict.values()), color='orange', alpha=.1)
     plt.grid()
     plt.legend()
+    plt.title("Reservations Per Month:")
     plt.savefig(".monthStats.png")
+    plt.cla()
+
+def calcSeasonStats():
+    totalSeasonDict = {
+        "Winter" : 0,
+        "Spring" : 0,
+        "Summer" : 0,
+        "Autumn" : 0
+    }
+    for lines in csvFile:
+        if lines['arrival_date_month'] == "December" or lines['arrival_date_month'] == "January" or lines['arrival_date_month'] == "February":
+            totalSeasonDict['Winter'] += 1
+        elif lines['arrival_date_month'] == "March" or lines['arrival_date_month'] == "April" or lines['arrival_date_month'] == "May":
+            totalSeasonDict['Spring'] += 1
+        elif lines['arrival_date_month'] == "July" or lines['arrival_date_month'] == "June" or lines['arrival_date_month'] == "August":
+            totalSeasonDict['Summer'] += 1
+        elif lines['arrival_date_month'] == "September" or lines['arrival_date_month'] == "October" or lines['arrival_date_month'] == "November":
+            totalSeasonDict['Autumn'] += 1
+    plt.plot(list(totalSeasonDict.keys()), list(totalSeasonDict.values()), marker='.', color='Blue')
+    plt.fill_between(list(totalSeasonDict.keys()), list(totalSeasonDict.values()), color='blue', alpha=.1)
+    plt.grid()
+    plt.title("Reservations Per Season:")
+    plt.savefig(".seasonStats.png")
     plt.cla()

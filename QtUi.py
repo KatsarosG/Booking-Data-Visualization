@@ -13,8 +13,9 @@ class MyWidget(QtWidgets.QWidget):
         CalcSeasonButton = QtWidgets.QPushButton("Season Stats")
         CalcRoomTypeButton = QtWidgets.QPushButton("Room Type Stats")
         CalcVisitorTypeButton = QtWidgets.QPushButton("Visitor Type Stats")
+        CalcTrendButton = QtWidgets.QPushButton("Trends")
 
-        ConsoleText = QtWidgets.QLabel("...Console...", )
+        ConsoleText = QtWidgets.QLabel("Please Click Read File To Start." )
         ConsoleText.setStyleSheet("QLabel {color: black; background-color: silver; border: 1px solid gray; border-radius: 2px;}")
 
         
@@ -38,6 +39,7 @@ class MyWidget(QtWidgets.QWidget):
         menuLayout.addWidget(CalcSeasonButton)
         menuLayout.addWidget(CalcRoomTypeButton)
         menuLayout.addWidget(CalcVisitorTypeButton)
+        menuLayout.addWidget(CalcTrendButton)
 
         menuLayout.insertSpacing(-1,500)
         outerLayout.addLayout(menuLayout)
@@ -113,9 +115,24 @@ class MyWidget(QtWidgets.QWidget):
                 pic.setScaledContents(True)
                 pic.show()
 
+        def calcTrendButton_func():
+            ConsoleText.setText("Calculating Trend... Please Wait.")
+            ConsoleText.repaint()
+            try:
+                fun.calcTrend()
+            except NameError:
+                ConsoleText.setText("No File Selected! Please Read A File First.")
+            else:
+                ConsoleText.setText("Trend Calculation Successful! Showing Graph.")
+                pixmap = QtGui.QPixmap(".trend.png")
+                pic.setPixmap(pixmap)
+                pic.setScaledContents(True)
+                pic.show()
+
         ReadFileButton.clicked.connect(readFileButton_func)
         CalcBasicButton.clicked.connect(calcBasicsButton_func)
         CalcMonthButton.clicked.connect(calcMonthsButton_func)
         CalcSeasonButton.clicked.connect(calcSeasonButton_func)
         CalcRoomTypeButton.clicked.connect(calcRoomTypeButton_func)
         CalcVisitorTypeButton.clicked.connect(calcVisitorTypeButton_func)
+        CalcTrendButton.clicked.connect(calcTrendButton_func)

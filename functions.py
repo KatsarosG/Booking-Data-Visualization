@@ -1,9 +1,12 @@
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
+from scipy.stats import linregress
 
 def readFile(fileName):
     global csvFile
-    df = pd.read_csv(fileName)
+    global df
+    df = pd.read_csv(fileName, parse_dates={'date':['arrival_date_year','arrival_date_month','arrival_date_day_of_month']}, keep_date_col=True, index_col='date')
     csvFile = df.to_dict(orient='records')
 
 def calcStayInNightsAvg():
@@ -141,7 +144,7 @@ def calcRoomTypeStats():
         roomTypeDict[lines['reserved_room_type']] += 1
         counter += 1
     plt.tight_layout()
-    plt.pie(list(roomTypeDict.values()), shadow=True, startangle=90)
+    plt.pie(list(roomTypeDict.values()), startangle=90, explode=[0.1,0.2,0.1,0.2,0.1,0.2,0.1,0.2,0.1,0.2], labels = ["A", "", "", "D", "E", "", "", "", "", ""], labeldistance=.6)
     
     labels = [f'{l}: {round(s/counter*100, 2)}%' for l, s in zip(list(roomTypeDict.keys()),roomTypeDict.values())]
     plt.legend(shadow=True, labels=labels, bbox_to_anchor=(0.05,0.8), loc='center right')
@@ -151,25 +154,41 @@ def calcRoomTypeStats():
 
 def calcVisitorTypeStats():
     visitorTypeDict = {
-        "Family" : 0,
-        "Couple" : 0,
-        "Alone" : 0
+        "Families" : 0,
+        "Couples" : 0,
+        "Alone Travelers" : 0
     }
 
     for lines in csvFile:
         if lines['adults'] == 1 and lines['children'] == 0:
-            visitorTypeDict['Alone'] += 1
+            visitorTypeDict['Alone Travelers'] += 1
         elif lines['adults'] == 2 and lines['children'] == 0:
-            visitorTypeDict['Couple'] += 1
+            visitorTypeDict['Couples'] += 1
         elif lines['adults'] >= 1 and lines['children'] >= 0:
-            visitorTypeDict['Family'] += 1
+            visitorTypeDict['Families'] += 1
     plt.tight_layout()
-    plt.pie(list(visitorTypeDict.values()),labels=list(visitorTypeDict.keys()))
-    plt.title("Type of Visitors Stats:")
+    plt.pie(list(visitorTypeDict.values()),labels=[f'{l}\n{s}' for l, s in zip(list(visitorTypeDict.keys()), visitorTypeDict.values())], autopct='%1.1f%%', shadow=True, explode=([0.1, 0.1, 0.2]))
+    plt.title("Type of Visitors:")
     plt.savefig(".visitorTypeStats.png")
     plt.close()
 
+def calcTrend():
+    #calc total Reservation for each month of each year
+    df['reservations'] = 1  #Add a new collumn with the constant 1.
+    resampledDF = df.resample('M').sum()['reservations'] #Make a new data frame with only each month and the total number of reservations for this month = sum of reservations = 1+1+...+1
+    
+    #x = resampledDF.iloc[:,0]
+    x = range(26)
+    y = resampledDF.tolist()
+    
+    slope, intercept, r_value, p_value, std_err = linregress(x,y)
+    regression_line = slope * x + intercept
 
-
-
-
+    resampledDF.plot()
+    plt.plot(list(resampledDF.index), regression_line)
+    plt.grid()
+    plt.legend(["Reservations", "Trend"])
+    plt.title("Trend of Reservations over time:")
+    plt.tight_layout()
+    plt.savefig(".trend.png")
+    plt.close() 

@@ -1,15 +1,15 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib import dates as mpldates
 from scipy.stats import linregress
 
 def readFile(fileName):
     global csvFile
     global df
-    #df = pd.read_csv(fileName, parse_dates={'date':['arrival_date_year','arrival_date_month','arrival_date_day_of_month']}, keep_date_col=True, index_col='date')
     df = pd.read_csv(fileName)
-    df['date'] = pd.to_datetime(str(df.get('arrival_date_year')[1])+'/'+(df.get('arrival_date_month')[1])+'/'+f"{int(df.get('arrival_date_day_of_month')[1]):02d}", format='%Y/%B/%d')
-    #df['date'] = pd.to_datetime(str(df['arrival_date_year'].values[1]), format='%Y')
+    df['date'] = df['arrival_date_year'].astype(str) + '/' + df['arrival_date_month'].astype(str) + '/' + df['arrival_date_day_of_month'].astype(str)
+    df['date'] = pd.to_datetime(df['date'], format='%Y/%B/%d')
     df = df.set_index('date')
     csvFile = df.to_dict(orient='records')
 
@@ -123,9 +123,14 @@ def calcSeasonStats():
     totalSeasonDict['Summer'] = totalMonthDict['June'] + totalMonthDict['July'] + totalMonthDict['August'] 
     totalSeasonDict['Autumn'] = totalMonthDict['September'] + totalMonthDict['October'] + totalMonthDict['November'] 
 
+    plt.pie(list(totalSeasonDict.values()), startangle=-90, labels=list(totalSeasonDict.keys()), explode=[0,0,0.1,0], shadow=True, autopct='%0.0d%%')
+
+    '''
     plt.plot(list(totalSeasonDict.keys()), list(totalSeasonDict.values()), marker='.', color='Blue')
     plt.fill_between(list(totalSeasonDict.keys()), list(totalSeasonDict.values()), color='blue', alpha=.1)
     plt.grid()
+    '''
+
     plt.title("Reservations Per Season:")
     plt.savefig(".seasonStats.png")
     plt.close()
@@ -148,7 +153,7 @@ def calcRoomTypeStats():
         roomTypeDict[lines['reserved_room_type']] += 1
         counter += 1
     plt.tight_layout()
-    plt.pie(list(roomTypeDict.values()), startangle=90, explode=[0.1,0.2,0.1,0.2,0.1,0.2,0.1,0.2,0.1,0.2], labels = ["A", "", "", "D", "E", "", "", "", "", ""], labeldistance=.6)
+    plt.pie(list(roomTypeDict.values()), startangle=90, labels = ["A", "", "", "D", "E", "", "", "", "", ""], labeldistance=.6)
     
     labels = [f'{l}: {round(s/counter*100, 2)}%' for l, s in zip(list(roomTypeDict.keys()),roomTypeDict.values())]
     plt.legend(shadow=True, labels=labels, bbox_to_anchor=(0.05,0.8), loc='center right')
@@ -179,30 +184,25 @@ def calcVisitorTypeStats():
 def calcTrend():
     #calc total Reservation for each month of each year
     df['reservations'] = 1  #Add a new collumn with the constant 1.
-    print("test1")
     resampledDF = df.resample('ME').sum()['reservations'] #Make a new data frame with only each month and the total number of reservations for this month = sum of reservations = 1+1+...+1
-    
-    print("test2")
     #x = resampledDF.iloc[:,0]
     x = range(26)
-    #y = resampledDF.tolist()
-    print('ResampledDf:')
-    print(resampledDF)
+    y = resampledDF.tolist()
     #y = list(resampledDF.get(1))
-    print("test3")
-    print(y)
-    '''
+    #print("test3")
+    #print(y)
     
     slope, intercept, r_value, p_value, std_err = linregress(x,y)
-    print("test4")
     regression_line = slope * x + intercept
+    
+    resampledDF = resampledDF.to_frame()
 
+    resampledDF['Trend'] = regression_line
     resampledDF.plot()
-    plt.plot(list(resampledDF.index), regression_line)
+    #plt.plot(resampledDF.index.to_pydatetime(), regression_line)
     plt.grid()
-    plt.legend(["Reservations", "Trend"])
+    plt.legend()
     plt.title("Trend of Reservations over time:")
     plt.tight_layout()
     plt.savefig(".trend.png")
     plt.close() 
-    '''

@@ -46,8 +46,9 @@ class MyWidget(QtWidgets.QWidget):
         outerLayout.addLayout(outputLayout)
         
         def readFileButton_func():
-            ConsoleText.setText("Reading File...")
+            ConsoleText.setText("Reading File... Please Wait.")
             ConsoleText.repaint()
+            QtWidgets.QApplication.processEvents()
             try:
                 fun.readFile('hotel_booking.csv')
             except FileNotFoundError:
@@ -118,6 +119,7 @@ class MyWidget(QtWidgets.QWidget):
         def calcTrendButton_func():
             ConsoleText.setText("Calculating Trend... Please Wait.")
             ConsoleText.repaint()
+            QtWidgets.QApplication.processEvents()
             try:
                 fun.calcTrend()
             except NameError:

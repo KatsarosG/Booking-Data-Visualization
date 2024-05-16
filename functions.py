@@ -6,7 +6,11 @@ from scipy.stats import linregress
 def readFile(fileName):
     global csvFile
     global df
-    df = pd.read_csv(fileName, parse_dates={'date':['arrival_date_year','arrival_date_month','arrival_date_day_of_month']}, keep_date_col=True, index_col='date')
+    #df = pd.read_csv(fileName, parse_dates={'date':['arrival_date_year','arrival_date_month','arrival_date_day_of_month']}, keep_date_col=True, index_col='date')
+    df = pd.read_csv(fileName)
+    df['date'] = pd.to_datetime(str(df.get('arrival_date_year')[1])+'/'+(df.get('arrival_date_month')[1])+'/'+f"{int(df.get('arrival_date_day_of_month')[1]):02d}", format='%Y/%B/%d')
+    #df['date'] = pd.to_datetime(str(df['arrival_date_year'].values[1]), format='%Y')
+    df = df.set_index('date')
     csvFile = df.to_dict(orient='records')
 
 def calcStayInNightsAvg():
@@ -175,13 +179,22 @@ def calcVisitorTypeStats():
 def calcTrend():
     #calc total Reservation for each month of each year
     df['reservations'] = 1  #Add a new collumn with the constant 1.
-    resampledDF = df.resample('M').sum()['reservations'] #Make a new data frame with only each month and the total number of reservations for this month = sum of reservations = 1+1+...+1
+    print("test1")
+    resampledDF = df.resample('ME').sum()['reservations'] #Make a new data frame with only each month and the total number of reservations for this month = sum of reservations = 1+1+...+1
     
+    print("test2")
     #x = resampledDF.iloc[:,0]
     x = range(26)
-    y = resampledDF.tolist()
+    #y = resampledDF.tolist()
+    print('ResampledDf:')
+    print(resampledDF)
+    #y = list(resampledDF.get(1))
+    print("test3")
+    print(y)
+    '''
     
     slope, intercept, r_value, p_value, std_err = linregress(x,y)
+    print("test4")
     regression_line = slope * x + intercept
 
     resampledDF.plot()
@@ -192,3 +205,4 @@ def calcTrend():
     plt.tight_layout()
     plt.savefig(".trend.png")
     plt.close() 
+    '''

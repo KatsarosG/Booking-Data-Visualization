@@ -1,3 +1,5 @@
+# The main code file that just calls the PyQt Application
+
 import sys
 from PySide6 import QtCore, QtWidgets, QtGui
 

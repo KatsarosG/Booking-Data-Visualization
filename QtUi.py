@@ -1,3 +1,4 @@
+# The configuration of the GUI elements
 from PySide6 import QtCore, QtWidgets, QtGui
 import matplotlib.pyplot as plt
 import functions as fun
@@ -6,7 +7,8 @@ class MyWidget(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Python Project 2024")
-
+        
+        #Declaration of buttons
         ReadFileButton = QtWidgets.QPushButton("Read File")
         CalcBasicButton = QtWidgets.QPushButton("Basic Stats")
         CalcMonthButton = QtWidgets.QPushButton("Month Stats")
@@ -14,15 +16,17 @@ class MyWidget(QtWidgets.QWidget):
         CalcRoomTypeButton = QtWidgets.QPushButton("Room Type Stats")
         CalcVisitorTypeButton = QtWidgets.QPushButton("Visitor Type Stats")
         CalcTrendButton = QtWidgets.QPushButton("Trends")
-
+        
+        #Declaration of outputConsole Label
         ConsoleText = QtWidgets.QLabel("Please Click Read File To Start." )
         ConsoleText.setStyleSheet("QLabel {color: black; background-color: silver; border: 1px solid gray; border-radius: 2px;}")
 
-        
+        #Declaration of the application layouts 
         outerLayout = QtWidgets.QHBoxLayout(self) 
         menuLayout = QtWidgets.QVBoxLayout()
         outputLayout = QtWidgets.QVBoxLayout()
 
+        #Setup of the output graph display, initialization as a blank white screen
         pic = QtWidgets.QLabel(self, alignment=QtCore.Qt.AlignCenter)
         fig= plt.figure()
         fig.savefig(".blank.png")
@@ -30,7 +34,8 @@ class MyWidget(QtWidgets.QWidget):
         pic.setPixmap(pixmap)
         outputLayout.addWidget(pic)
         pic.show()
-
+        
+        #Placement of widgets to the coresponding layouts
         outputLayout.addWidget(ConsoleText)
 
         menuLayout.addWidget(ReadFileButton)
@@ -45,10 +50,11 @@ class MyWidget(QtWidgets.QWidget):
         outerLayout.addLayout(menuLayout)
         outerLayout.addLayout(outputLayout)
         
+        #Declaration of the functions that get called by the buttons
         def readFileButton_func():
             ConsoleText.setText("Reading File... Please Wait.")
             ConsoleText.repaint()
-            QtWidgets.QApplication.processEvents()
+            QtWidgets.QApplication.processEvents() #Force repaint of output Console 
             try:
                 fun.readFile('hotel_booking.csv')
             except FileNotFoundError:
@@ -119,7 +125,7 @@ class MyWidget(QtWidgets.QWidget):
         def calcTrendButton_func():
             ConsoleText.setText("Calculating Trend... Please Wait.")
             ConsoleText.repaint()
-            QtWidgets.QApplication.processEvents()
+            QtWidgets.QApplication.processEvents() #Force repaint of output Console
             try:
                 fun.calcTrend()
             except NameError:
@@ -130,7 +136,8 @@ class MyWidget(QtWidgets.QWidget):
                 pic.setPixmap(pixmap)
                 pic.setScaledContents(True)
                 pic.show()
-
+        
+        #Calling of above functions at the event of a clicked button
         ReadFileButton.clicked.connect(readFileButton_func)
         CalcBasicButton.clicked.connect(calcBasicsButton_func)
         CalcMonthButton.clicked.connect(calcMonthsButton_func)

@@ -3,7 +3,6 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib import dates as mpldates
 from scipy.stats import linregress
 
 def readFile(fileName):

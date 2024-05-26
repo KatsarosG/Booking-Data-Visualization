@@ -4,13 +4,15 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import linregress
+import locale
 
 def readFile(fileName):
     global csvFile
     global df
     df = pd.read_csv(fileName)
-    #Add collumn 'date' with the arrival date in format YYYY/Month/D
-    df['date'] = df['arrival_date_year'].astype(str) + '/' + df['arrival_date_month'].astype(str) + '/' + df['arrival_date_day_of_month'].astype(str)
+    #Add collumn 'date' with the arrival date in format YYYY/Month/DD
+    df['date'] = df['arrival_date_year'].astype(str) + '/' + df['arrival_date_month'].astype(str) + '/' + f"{int(df.get('arrival_date_day_of_month')[1]):02d}"
+    locale.setlocale(locale.LC_TIME, 'en_US.UTF-8')
     df['date'] = pd.to_datetime(df['date'], format='%Y/%B/%d')
     #Set 'date' collumn as the index of the dataframe
     df = df.set_index('date')
@@ -109,7 +111,6 @@ def calcMonthStats():
         else:
             cityMonthDict[lines['arrival_date_month']] += 1
             totalMonthDict[lines['arrival_date_month']] += 1
-
     #Create plot
     #Plot total reservations
     plt.plot(list(totalMonthDict.keys()), list(totalMonthDict.values()), marker='.', label = 'Total', color='Blue')
